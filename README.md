@@ -16,4 +16,6 @@ $secret - секрет ) если вдруг нужен будет, пишите
 $token_bot - токен полученный в телеграмме
 
 Пример отправки
+<code>
 \nyos\Msg::sendTelegramm( string $text, $to_id = null, $secret = null, $token_bot = null );
+</code>
