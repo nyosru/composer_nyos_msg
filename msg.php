@@ -3,7 +3,6 @@
 namespace nyos;
 
 class Msg {
-
     
     public static $send_now = false;
 
