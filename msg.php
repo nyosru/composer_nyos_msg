@@ -13,10 +13,11 @@ class Msg {
      * @param type $text
      * @param type $to_id 
      * @param type $secret
+     * @param string $token
      * если null то админу сообщение
      * если id то шлём по адресу
      */
-    public static function sendTelegramm( string $text, $to_id = null, $secret = null ) {
+    public static function sendTelegramm( string $text, $to_id = null, $secret = null, $token = null ) {
         // telegramm
 
         if ($to_id === null) {
@@ -30,8 +31,9 @@ class Msg {
         } else {
 
             file_get_contents('https://api.uralweb.info/telegram.php?' . http_build_query(array(
-                's' => md5( $_SERVER['HTTP_HOST'] . $secret ) ,
+                's' => md5( $_SERVER['HTTP_HOST'] ) ,
                 'id' => $to_id ,
+                'token' => $token, 
                 'msg' => $text , 
                 'domain' => $_SERVER['HTTP_HOST']
             )));
