@@ -30,10 +30,10 @@ class Msg {
         } else {
 
             file_get_contents('https://api.uralweb.info/telegram.php?' . http_build_query(array(
-                        's' => md5($to_id . '-=' . $text . $secret ) ,
-                        'id' => $to_id ,
-                        'msg' => $text , 
-                        'domain' => $_SERVER['HTTP_HOST']
+                's' => md5( $_SERVER['HTTP_HOST'] . $secret ) ,
+                'id' => $to_id ,
+                'msg' => $text , 
+                'domain' => $_SERVER['HTTP_HOST']
             )));
 
         }
