@@ -3,7 +3,6 @@
 namespace nyos;
 
 class Msg {
-
     
     public static $send_now = false;
 
@@ -31,7 +30,7 @@ class Msg {
         } else {
 
             file_get_contents('https://api.uralweb.info/telegram.php?' . http_build_query(array(
-                's' => md5( $_SERVER['HTTP_HOST'] ) ,
+                's' => isset($secret{5}) ? $secret : md5( $_SERVER['HTTP_HOST'] ) ,
                 'id' => $to_id ,
                 'token' => $token, 
                 'msg' => $text , 
