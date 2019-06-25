@@ -1,7 +1,7 @@
 {
     "name": "nyos/msg",
     "description": "Пакет функций nyos\\msg\\** для работы с сообщениями ( vk telegram )",
-    "version": "1.2.7",
+    "version": "1.2.8",
     "keywords": [
         "telegram","api","nyos", "uralweb.info"
     ],
@@ -23,6 +23,8 @@
     }
     ,
     "autoload": {
-        "classmap": ["msg.php"]
+        "files": [
+            "msg.php"
+        ]
     }
 }
