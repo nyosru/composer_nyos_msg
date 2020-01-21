@@ -40,6 +40,7 @@ class Msg {
 
                     // 860515561 - мой ак на буке
                     $go[] = 860515561;
+
                 }
 
                 if (!empty($go))
@@ -60,10 +61,11 @@ class Msg {
             }
 
             file_get_contents('https://api.uralweb.info/telegram.php?' . http_build_query([
-                        's' => md5($secret),
+                        's' => md5(1),
                         'msg' => $text,
                         'domain' => $_SERVER['HTTP_HOST']
             ]));
+            
         } else {
 
             file_get_contents('https://api.uralweb.info/telegram.php?' . http_build_query(array(
