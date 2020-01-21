@@ -18,3 +18,6 @@ $token_bot - токен полученный в телеграмме
 <code>
 \nyos\Msg::sendTelegramm( string $text, $to_id = null, $secret = null, $token_bot = null );
 </code>
+
+------------- отправка супер админу и админу сайта -----------
+\nyos\Msg::sendTelegramm($txt, null, 2);
