@@ -42,6 +42,26 @@ class Msg {
                     $go[] = 860515561;
 
                 }
+                // 
+                elseif( $_SERVER['HTTP_HOST'] == 'as.dev.uralweb.info' ) {
+
+                    // Денис Лашенко
+                    $go[] = 663501687;
+
+                    // 860515561 - мой ак на буке
+                    $go[] = 860515561;
+
+                }
+                // 
+                elseif( $_SERVER['HTTP_HOST'] == 'ne.dev.uralweb.info' ) {
+
+                    // Вячеслав
+                    $go[] = 729843637;
+
+                    // 860515561 - мой ак на буке
+                    $go[] = 860515561;
+
+                }
 
                 if (!empty($go))
                     foreach ($go as $tele_id) {
