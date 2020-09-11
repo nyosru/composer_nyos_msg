@@ -5,6 +5,7 @@ namespace nyos;
 class Msg {
 
     public static $send_now = false;
+    public static $admins_id = [];
 
     /**
      * отправить сообщение в телеграмм
@@ -28,7 +29,11 @@ class Msg {
                 // 360209578 - я базовый
                 // 860515561 - мой ак на буке
 
-                $go = [];
+                if (!empty(self::$admins_id)) {
+                    $go = array_unique(self::$admins_id);
+                } else {
+                    $go = [];
+                }
 
                 if ($_SERVER['HTTP_HOST'] == 'adomik.uralweb.info' ||
                         $_SERVER['HTTP_HOST'] == 'adomik.dev.uralweb.info' ||
@@ -40,30 +45,6 @@ class Msg {
 
                     // 860515561 - мой ак на буке
                     $go[] = 860515561;
-
-                }
-                // 
-                elseif( $_SERVER['HTTP_HOST'] == 'as.dev.uralweb.info' ) {
-
-                    // Денис Лашенко
-                    // $go[] = 663501687;
-                    
-                    // менеджер магазина
-                    $go[] = 1022228978;
-
-                    // 860515561 - мой ак на буке
-                    $go[] = 860515561;
-
-                }
-                // 
-                elseif( $_SERVER['HTTP_HOST'] == 'ne.dev.uralweb.info' ) {
-
-                    // Вячеслав
-                    $go[] = 729843637;
-
-                    // 860515561 - мой ак на буке
-                    $go[] = 860515561;
-
                 }
 
                 if (!empty($go))
@@ -79,16 +60,15 @@ class Msg {
                     }
             }
             // если секрет = 1 то шлём тех оповещение мне
-            else {
-                
-            }
+//            else {
+//                
+//            }
 
             file_get_contents('https://api.uralweb.info/telegram.php?' . http_build_query([
                         's' => md5(1),
                         'msg' => $text,
                         'domain' => $_SERVER['HTTP_HOST']
             ]));
-            
         } else {
 
             file_get_contents('https://api.uralweb.info/telegram.php?' . http_build_query(array(
