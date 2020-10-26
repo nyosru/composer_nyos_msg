@@ -1,15 +1,37 @@
 <?php
 
-namespace nyos;
+/**
+  класс модуля
+ */
 
-// удалить файл, весь функционал перенесён в /src/class.php
+namespace Nyos;
+
+//if (!defined('IN_NYOS_PROJECT'))
+//    throw new \Exception('Сработала защита от розовых хакеров, обратитесь к администрратору');
 
 class Msg {
 
-    public static $send_now = false;
+    /**
+     * smsaero.ru
+     * @var type 
+     */
+    public static $system = ''; 
+
+        public static $send_now = false;
     public static $admins_id = [];
 
-    /**
+    
+    public static function enter(  ) {
+
+        return false;
+    }
+
+    public static function send(  ) {
+
+        return false;
+    }
+
+        /**
      * отправить сообщение в телеграмм
      * 
      * @param type $text
@@ -105,4 +127,40 @@ class Msg {
 //            echo '<pre>'; print_r($e); echo '</pre>';
     }
 
+
+    
 }
+
+/**
+* пример работы с классом SmsaeroApi
+*/
+//include_once('SmsaeroApiV2.class.php');
+//use SmsaeroApiV2\SmsaeroApiV2;
+//
+//$smsaero_api = new SmsaeroApiV2('email', 'api_key', 'SIGN'); // api_key из личного кабинета
+//var_dump($smsaero_api->send(['70000000000','70000000001'],'Тестовая отправка', 'DIRECT')); // Отправка сообщений
+//var_dump($smsaero_api->check_send(123456)); // Проверка статуса SMS сообщения
+//var_dump($smsaero_api->sms_list(null,'тест',3)); //Получение списка отправленных sms сообщений
+//var_dump($smsaero_api->balance()); // Запрос баланса
+//var_dump($smsaero_api->auth()); // Тестовый метод для проверки авторизации
+//var_dump($smsaero_api->cards()); // Получение списка платёжных карт
+//var_dump($smsaero_api->addbalance(100, 12345)); // Пополнение баланса
+//var_dump($smsaero_api->tariffs()); // Запрос тарифа
+//var_dump($smsaero_api->sign_add('new sign')); // Добавление подписи
+//var_dump($smsaero_api->sign_list()); // Получить список подписей
+//var_dump($smsaero_api->group_add('new_group_name')); //Добавление группы
+//var_dump($smsaero_api->group_list()); // Получение списка групп
+//var_dump($smsaero_api->group_delete(123)); // Удаление группы
+//var_dump($smsaero_api->contact_add('70000000000', null, null, 'male', 'name', 'surname', null, 'param example')); // Добавление контакта
+//var_dump($smsaero_api->contact_delete(123)); // Удаление контакта
+//var_dump($smsaero_api->contact_list()); // Список контактов
+//var_dump($smsaero_api->blacklist_add(123)); // Добавление в чёрный список
+//var_dump($smsaero_api->blacklist_delete(123)); // Удаление из чёрного списка
+//var_dump($smsaero_api->blacklist_list()); // Список контактов в черном списке
+//var_dump($smsaero_api->hlr_check('70000000000')); // Создание запроса на проверку HLR
+//var_dump($smsaero_api->hlr_status(474664)); // Получение статуса HLR
+//var_dump($smsaero_api->number_operator('79136535500')); // Определение оператора
+//var_dump($smsaero_api->viber_send('70000000000', null, 'Bonus', 'INFO','Тестовое сообщение')); // Отправка Viber-рассылок
+//var_dump($smsaero_api->viber_statistic(1636)); // Статистика по Viber-рассылке
+//var_dump($smsaero_api->viber_list());  // Список Viber-рассылок
+//var_dump($smsaero_api->viber_sign_list()); // Список доступных подписей для Viber-рассылок
