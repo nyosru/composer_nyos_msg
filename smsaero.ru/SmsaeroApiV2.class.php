@@ -1,5 +1,7 @@
 ﻿<?php
-namespace SmsaeroApiV2;
+
+// namespace SmsaeroApiV2;
+// use SmsaeroApiV2 as SmsaeroApiV2;
 
 class SmsaeroApiV2
 {

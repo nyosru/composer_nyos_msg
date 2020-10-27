@@ -15,23 +15,68 @@ class Msg {
      * smsaero.ru
      * @var type 
      */
-    public static $system = ''; 
-
-        public static $send_now = false;
+    public static $system = '';
+    public static $send_now = false;
     public static $admins_id = [];
 
-    
-    public static function enter(  ) {
+    /**
+     * система для смс - smsaero.ru
+     * @var type 
+     */
+    public static $sms_system = '';
+    public static $sms_class = null;
+    public static $sms_login = '';
+    public static $sms_pass = '';
+    public static $sms_enter = false;
+    public static $sms_podpis = '';
 
+    public static function enterSms() {
+
+        if (!empty(self::$sms_system) && self::$sms_system == 'smsaero.ru' && !empty(self::$sms_login) && !empty(self::$sms_pass)) {
+
+            // include_once( __DIR__.'/../smsaero.ru/SmsaeroApiV2.class.php');
+            require_once __DIR__.'/../smsaero.ru/SmsaeroApiV2.class.php';
+            // use SmsaeroApiV2\SmsaeroApiV2;
+//
+            self::$sms_class = new \SmsaeroApiV2(self::$sms_login, self::$sms_pass, 'SIGN'); // api_key из личного кабинета
+            self::$sms_enter = true;
+
+            return \f\end3('вошли в систему');
+        }
+
+        return \f\end3('не вошли в систему', false);
+    }
+
+    /**
+     * отправка смс-ок
+     * @param type $phones
+     * @param type $text
+     * @return boolean
+     */
+    public static function sendSms( $phones, $text ) {
+
+        if (!empty(self::$sms_system) && self::$sms_system == 'smsaero.ru' && self::$sms_enter !== true)
+            return \f\end3('входа нет', false);
+
+        $list_phones = [];
+        
+        if( !empty($phones) && is_array($phones) && sizeof($phones) > 0 ){
+            
+            foreach( $phones as $tel ){
+                $list_phones[] = \f\gsm_rus($tel,7);
+            }
+        }
+        
+        \f\pa($list_phones);
+        
+        // self::$sms_class->send( $phone , $text , self::$sms_podpis ) ); // Отправка сообщений
+//var_dump($smsaero_api->check_send(123456)); // Проверка статуса SMS сообщения
+        
+        
         return false;
     }
 
-    public static function send(  ) {
-
-        return false;
-    }
-
-        /**
+    /**
      * отправить сообщение в телеграмм
      * 
      * @param type $text
@@ -127,8 +172,6 @@ class Msg {
 //            echo '<pre>'; print_r($e); echo '</pre>';
     }
 
-
-    
 }
 
 /**
