@@ -29,13 +29,16 @@ class Msg {
     public static $sms_pass = '';
     public static $sms_enter = false;
     public static $sms_podpis = '';
+    // для настройки file get content
+    // public static $domain_api_telega = 'https://api.uralweb.info';
+    public static $domain_api_telega = 'https://api.php-cat.com';
 
     public static function enterSms() {
 
         if (!empty(self::$sms_system) && self::$sms_system == 'smsaero.ru' && !empty(self::$sms_login) && !empty(self::$sms_pass)) {
 
             // include_once( __DIR__.'/../smsaero.ru/SmsaeroApiV2.class.php');
-            require_once __DIR__.'/../smsaero.ru/SmsaeroApiV2.class.php';
+            require_once __DIR__ . '/../smsaero.ru/SmsaeroApiV2.class.php';
             // use SmsaeroApiV2\SmsaeroApiV2;
 //
             self::$sms_class = new \SmsaeroApiV2(self::$sms_login, self::$sms_pass, 'SIGN'); // api_key из личного кабинета
@@ -53,26 +56,26 @@ class Msg {
      * @param type $text
      * @return boolean
      */
-    public static function sendSms( $phones, $text ) {
+    public static function sendSms($phones, $text) {
 
         if (!empty(self::$sms_system) && self::$sms_system == 'smsaero.ru' && self::$sms_enter !== true)
             return \f\end3('входа нет', false);
 
         $list_phones = [];
-        
-        if( !empty($phones) && is_array($phones) && sizeof($phones) > 0 ){
-            
-            foreach( $phones as $tel ){
-                $list_phones[] = \f\gsm_rus($tel,7);
+
+        if (!empty($phones) && is_array($phones) && sizeof($phones) > 0) {
+
+            foreach ($phones as $tel) {
+                $list_phones[] = \f\gsm_rus($tel, 7);
             }
         }
-        
+
         \f\pa($list_phones);
-        
+
         // self::$sms_class->send( $phone , $text , self::$sms_podpis ) ); // Отправка сообщений
 //var_dump($smsaero_api->check_send(123456)); // Проверка статуса SMS сообщения
-        
-        
+
+
         return false;
     }
 
@@ -104,43 +107,46 @@ class Msg {
                     $go = [];
                 }
 
-                if ($_SERVER['HTTP_HOST'] == 'adomik.uralweb.info' ||
-                        $_SERVER['HTTP_HOST'] == 'adomik.dev.uralweb.info' ||
-                        $_SERVER['HTTP_HOST'] == 'photo.uralweb.info'
-                ) {
-
-                    // 93066902 - максим яподомик суши
-                    $go[] = 93066902;
-
-                    // 860515561 - мой ак на буке
-                    $go[] = 860515561;
-                }
+//                if ($_SERVER['HTTP_HOST'] == 'adomik.uralweb.info' ||
+//                        $_SERVER['HTTP_HOST'] == 'adomik.dev.uralweb.info' ||
+//                        $_SERVER['HTTP_HOST'] == 'photo.uralweb.info'
+//                ) {
+//
+//                    // 93066902 - максим яподомик суши
+//                    $go[] = 93066902;
+//
+//                    // 860515561 - мой ак на буке
+//                    $go[] = 860515561;
+//                }
 
                 if (!empty($go))
                     foreach ($go as $tele_id) {
 
-                        file_get_contents('https://api.uralweb.info/telegram.php?' . http_build_query([
+
+                        file_get_contents(self::$domain_api_telega . '/telegram.php?' . http_build_query([
                                     's' => md5($_SERVER['HTTP_HOST']),
                                     'id' => $tele_id,
                                     'token' => $token,
                                     'msg' => $text,
                                     'domain' => $_SERVER['HTTP_HOST']
-                        ]));
+                                ])
+                        );
                     }
             }
+
             // если секрет = 1 то шлём тех оповещение мне
 //            else {
 //                
 //            }
 
-            file_get_contents('https://api.uralweb.info/telegram.php?' . http_build_query([
+            file_get_contents(self::$domain_api_telega . '/telegram.php?' . http_build_query([
                         's' => md5(1),
                         'msg' => $text,
                         'domain' => $_SERVER['HTTP_HOST']
             ]));
         } else {
 
-            file_get_contents('https://api.uralweb.info/telegram.php?' . http_build_query(array(
+            file_get_contents(self::$domain_api_telega . '/telegram.php?' . http_build_query(array(
                         's' => isset($secret{5}) ? $secret : md5($_SERVER['HTTP_HOST']),
                         'id' => $to_id,
                         'token' => $token,
@@ -160,13 +166,13 @@ class Msg {
 
         // echo __FUNCTION__;
 
-        $e = file_get_contents('https://api.uralweb.info/vk.php?' . http_build_query(array(
+        $e = file_get_contents(self::$domain_api_telega . '/vk.php?' . http_build_query(array(
                     's' => md5('send' . $from . $to_id),
                     'group' => $from,
                     'to_user' => $to_id,
                     'msg' => $text,
                     'domain' => $_SERVER['HTTP_HOST']
-        )));
+                )));
 
 //            $e = json_decode($e);
 //            echo '<pre>'; print_r($e); echo '</pre>';
