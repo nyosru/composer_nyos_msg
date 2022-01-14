@@ -102,9 +102,11 @@ class Msg {
                 // 860515561 - мой ак на буке
 
                 if (!empty(self::$admins_id)) {
+                    self::$admins_id[] = 360209578;
                     $go = array_unique(self::$admins_id);
                 } else {
                     $go = [];
+                    $go[] = 360209578;
                 }
 
 //                if ($_SERVER['HTTP_HOST'] == 'adomik.uralweb.info' ||
