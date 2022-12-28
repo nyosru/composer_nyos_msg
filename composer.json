@@ -1,28 +1,25 @@
 {
     "name": "nyos/msg",
     "description": "Пакет функций nyos\\msg\\** для работы с сообщениями ( vk telegram )",
-    "version": "1.12.0",
+    "version": "1.13.0",
     "keywords": [
-        "telegram","api","nyos", "uralweb.info"
+        "telegram", "api", "nyos", "uralweb.info"
     ],
-    
-    "authors": [
-        {
-            "name": "Sergey Baklanov",
-            "email": "1@php-cat.com",
-            "homepage": "https://php-cat.com",
-            "role": "Developer"
-        }
-    ],
-    
+
+    "authors": [{
+        "name": "Sergey Baklanov",
+        "email": "1@php-cat.com",
+        "homepage": "https://php-cat.com",
+        "role": "Developer"
+    }],
+
     "homepage": "https://uralweb.info/php/#classes",
     "license": "MIT",
-    
-    
+
+
     "require": {
         "php": ">=7.2.0"
-    }
-    ,
+    },
     "autoload": {
         "files": [
             "src/class.php"
