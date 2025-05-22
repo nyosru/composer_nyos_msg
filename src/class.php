@@ -143,11 +143,11 @@ class Msg
 
                         file_get_contents(
                             self::$domain_api_telega . '/telegram.php?' . http_build_query([
-                                's' => md5($_SERVER['HTTP_HOST']),
+                                's' => md5(self::getDomain()),
                                 'id' => $tele_id,
                                 'token' => $token,
                                 'msg' => $text,
-                                'domain' => $_SERVER['HTTP_HOST']
+                                'domain' => self::getDomain()
                             ])
                         );
                     }
@@ -161,18 +161,18 @@ class Msg
                 file_get_contents(self::$domain_api_telega . '/telegram.php?' . http_build_query([
                     's' => md5(1),
                     'msg' => $text,
-                    'domain' => $_SERVER['HTTP_HOST']
+                    'domain' => self::getDomain()
                 ]));
             }
         } else {
 
             file_get_contents(self::$domain_api_telega . '/telegram.php?' . http_build_query(array(
                 's' => isset($secret{
-                5}) ? $secret : md5($_SERVER['HTTP_HOST']),
+                5}) ? $secret : md5(self::getDomain()),
                 'id' => $to_id,
                 'token' => $token,
                 'msg' => $text,
-                'domain' => $_SERVER['HTTP_HOST']
+                'domain' => self::getDomain()
             )));
         }
     }
@@ -193,7 +193,7 @@ class Msg
             'group' => $from,
             'to_user' => $to_id,
             'msg' => $text,
-            'domain' => $_SERVER['HTTP_HOST']
+            'domain' => self::getDomain()
         )));
 
         //            $e = json_decode($e);
