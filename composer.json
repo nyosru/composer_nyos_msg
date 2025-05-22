@@ -1,7 +1,7 @@
 {
     "name": "nyos/msg",
     "description": "Пакет функций nyos\\msg\\** для работы с сообщениями ( vk telegram )",
-    "version": "1.17.0",
+    "version": "1.18.0",
     "keywords": [
         "telegram", "api", "nyos", "uralweb.info"
     ],
