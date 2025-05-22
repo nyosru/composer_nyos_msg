@@ -12,6 +12,8 @@ namespace Nyos;
 class Msg
 {
 
+    public static $domain = '';
+
     /**
      * smsaero.ru
      * @var type 
@@ -33,6 +35,16 @@ class Msg
     // для настройки file get content
     // public static $domain_api_telega = 'https://api.uralweb.info';
     public static $domain_api_telega = 'https://api.php-cat.com';
+
+
+
+    public static function getDomain()
+    {
+        if (!empty(self::$domain))
+            return self::$domain;
+
+        return $_SERVER['HTTP_HOST'];
+    }
 
     public static function enterSms()
     {
@@ -73,7 +85,7 @@ class Msg
             }
         }
 
-        \f\pa($list_phones);
+//        \f\pa($list_phones);
 
         // self::$sms_class->send( $phone , $text , self::$sms_podpis ) ); // Отправка сообщений
         //var_dump($smsaero_api->check_send(123456)); // Проверка статуса SMS сообщения
