@@ -36,8 +36,6 @@ class Msg
     // public static $domain_api_telega = 'https://api.uralweb.info';
     public static $domain_api_telega = 'https://api.php-cat.com';
 
-
-
     public static function getDomain()
     {
         if (!empty(self::$domain))
