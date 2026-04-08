@@ -35,6 +35,7 @@ class Msg
     // для настройки file get content
     // public static $domain_api_telega = 'https://api.uralweb.info';
     public static $domain_api_telega = 'https://api.php-cat.com';
+    public static $domain_api = 'https://api.php-cat.com';
 
     public static function getDomain()
     {
@@ -147,23 +148,52 @@ class Msg
     }
 
     /**
-     * отправка сообщения от группы пользователю
-     * @param type $text
-     * @param type $to_id
-     * @param type $from
+     * отправка сообщения от группы - пользователю
+     * @param string $text сообщение что шлём
+     * @param integer $to_id кому шлём сообщение, или одна цифра или через запятую
+     * @param string $from название группы от которой шлём сообщение
+     * @param string $group_vk_token токен группы от которой шлём сообщение
      */
-    public static function sendVkFromGroup($text, $to_id, $from = 'uralweb_info')
+    public static function sendVkFromGroup($text, $to_id, $from = 'uralweb_info', $group_vk_token = null )
     {
 
-        // echo __FUNCTION__;
-
-        $e = file_get_contents(self::$domain_api_telega . '/vk.php?' . http_build_query(array(
+        $url = self::$domain_api . '/api/vk/send?' . http_build_query(array(
             's' => md5('send' . $from . $to_id),
             'group' => $from,
             'to_user' => $to_id,
             'msg' => $text,
             'domain' => self::getDomain()
-        )));
+        ));
+
+        $context = stream_context_create([
+            'http' => [
+                'timeout' => 3,
+            ],
+        ]);
+
+        $e = @file_get_contents($url, false, $context);
+
+        if ($e === false) {
+            $error = error_get_last();
+
+            return json_encode([
+                'status' => false,
+                'message' => 'Ошибка отправки сообщения ВК',
+                'error' => $error['message'] ?? 'unknown error',
+            ], JSON_UNESCAPED_UNICODE);
+        }
+
+        json_decode($e);
+
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $e;
+        }
+
+        return json_encode([
+            'status' => true,
+            'message' => 'Ответ получен не в JSON формате',
+            'response' => $e,
+        ], JSON_UNESCAPED_UNICODE);
 
         //            $e = json_decode($e);
         //            echo '<pre>'; print_r($e); echo '</pre>';
