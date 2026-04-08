@@ -35,27 +35,29 @@ class Msg
     // для настройки file get content
     // public static $domain_api_telega = 'https://api.uralweb.info';
     public static $domain_api_telega = 'https://api.php-cat.com';
+    public static $domain_api = 'https://api.php-cat.com';
 
     public static function getDomain()
     {
         if (!empty(self::$domain))
             return self::$domain;
 
-        return $_SERVER['HTTP_HOST'];
+        // Проверяем наличие HTTP_HOST
+        if (isset($_SERVER['HTTP_HOST'])) {
+            return $_SERVER['HTTP_HOST'];
+        }
+
+        // Для консольных команд
+        return config('app.url') ?? 'example.com';
     }
 
     public static function enterSms()
     {
 
         if (!empty(self::$sms_system) && self::$sms_system == 'smsaero.ru' && !empty(self::$sms_login) && !empty(self::$sms_pass)) {
-
-            // include_once( __DIR__.'/../smsaero.ru/SmsaeroApiV2.class.php');
             require_once __DIR__ . '/../smsaero.ru/SmsaeroApiV2.class.php';
-            // use SmsaeroApiV2\SmsaeroApiV2;
-            //
             self::$sms_class = new \SmsaeroApiV2(self::$sms_login, self::$sms_pass, 'SIGN'); // api_key из личного кабинета
             self::$sms_enter = true;
-
             return \f\end3('вошли в систему');
         }
 
@@ -83,12 +85,6 @@ class Msg
             }
         }
 
-//        \f\pa($list_phones);
-
-        // self::$sms_class->send( $phone , $text , self::$sms_podpis ) ); // Отправка сообщений
-        //var_dump($smsaero_api->check_send(123456)); // Проверка статуса SMS сообщения
-
-
         return false;
     }
 
@@ -110,11 +106,7 @@ class Msg
 
             // если секрет = 2 то шлём тех оповещение админу сайта и мне
             if ($secret == 2) {
-
-                // 93066902 - максим яподомик суши
                 // 360209578 - я базовый
-                // 860515561 - мой ак на буке
-
                 if (!empty(self::$admins_id)) {
                     self::$admins_id[] = 360209578;
                     $go = array_unique(self::$admins_id);
@@ -123,22 +115,8 @@ class Msg
                     $go[] = 360209578;
                 }
 
-                //                if ($_SERVER['HTTP_HOST'] == 'adomik.uralweb.info' ||
-                //                        $_SERVER['HTTP_HOST'] == 'adomik.dev.uralweb.info' ||
-                //                        $_SERVER['HTTP_HOST'] == 'photo.uralweb.info'
-                //                ) {
-                //
-                //                    // 93066902 - максим яподомик суши
-                //                    $go[] = 93066902;
-                //
-                //                    // 860515561 - мой ак на буке
-                //                    $go[] = 860515561;
-                //                }
-
                 if (!empty($go))
                     foreach ($go as $tele_id) {
-
-
                         file_get_contents(
                             self::$domain_api_telega . '/telegram.php?' . http_build_query([
                                 's' => md5(self::getDomain()),
@@ -151,11 +129,6 @@ class Msg
                     }
             } else {
 
-                // если секрет = 1 то шлём тех оповещение мне
-                //            else {
-                //                
-                //            }
-
                 file_get_contents(self::$domain_api_telega . '/telegram.php?' . http_build_query([
                     's' => md5(1),
                     'msg' => $text,
@@ -164,71 +137,65 @@ class Msg
             }
         } else {
 
-            file_get_contents(self::$domain_api_telega . '/telegram.php?' . http_build_query(array(
-                's' => isset($secret{
-                5}) ? $secret : md5(self::getDomain()),
+            file_get_contents(self::$domain_api_telega . '/telegram.php?' . http_build_query([
+                's' => isset($secret{5}) ? $secret : md5(self::getDomain()),
                 'id' => $to_id,
                 'token' => $token,
                 'msg' => $text,
                 'domain' => self::getDomain()
-            )));
+            ]));
         }
     }
 
     /**
-     * отправка сообщения от группы пользователю
-     * @param type $text
-     * @param type $to_id
-     * @param type $from
+     * отправка сообщения от группы - пользователю
+     * @param string $text сообщение что шлём
+     * @param integer $to_id кому шлём сообщение, или одна цифра или через запятую
+     * @param string $from название группы от которой шлём сообщение
+     * @param string $group_vk_token токен группы от которой шлём сообщение
      */
-    public static function sendVkFromGroup($text, $to_id, $from = 'uralweb_info')
+    public static function sendVkFromGroup($text, $to_id, $from = 'uralweb_info', $group_vk_token = null )
     {
 
-        // echo __FUNCTION__;
-
-        $e = file_get_contents(self::$domain_api_telega . '/vk.php?' . http_build_query(array(
+        $url = self::$domain_api . '/api/vk/send?' . http_build_query(array(
             's' => md5('send' . $from . $to_id),
             'group' => $from,
             'to_user' => $to_id,
             'msg' => $text,
             'domain' => self::getDomain()
-        )));
+        ));
+
+        $context = stream_context_create([
+            'http' => [
+                'timeout' => 3,
+            ],
+        ]);
+
+        $e = @file_get_contents($url, false, $context);
+
+        if ($e === false) {
+            $error = error_get_last();
+
+            return json_encode([
+                'status' => false,
+                'message' => 'Ошибка отправки сообщения ВК',
+                'error' => $error['message'] ?? 'unknown error',
+            ], JSON_UNESCAPED_UNICODE);
+        }
+
+        json_decode($e);
+
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $e;
+        }
+
+        return json_encode([
+            'status' => true,
+            'message' => 'Ответ получен не в JSON формате',
+            'response' => $e,
+        ], JSON_UNESCAPED_UNICODE);
 
         //            $e = json_decode($e);
         //            echo '<pre>'; print_r($e); echo '</pre>';
     }
 }
-
-/**
- * пример работы с классом SmsaeroApi
- */
-//include_once('SmsaeroApiV2.class.php');
-//use SmsaeroApiV2\SmsaeroApiV2;
-//
-//$smsaero_api = new SmsaeroApiV2('email', 'api_key', 'SIGN'); // api_key из личного кабинета
-//var_dump($smsaero_api->send(['70000000000','70000000001'],'Тестовая отправка', 'DIRECT')); // Отправка сообщений
-//var_dump($smsaero_api->check_send(123456)); // Проверка статуса SMS сообщения
-//var_dump($smsaero_api->sms_list(null,'тест',3)); //Получение списка отправленных sms сообщений
-//var_dump($smsaero_api->balance()); // Запрос баланса
-//var_dump($smsaero_api->auth()); // Тестовый метод для проверки авторизации
-//var_dump($smsaero_api->cards()); // Получение списка платёжных карт
-//var_dump($smsaero_api->addbalance(100, 12345)); // Пополнение баланса
-//var_dump($smsaero_api->tariffs()); // Запрос тарифа
-//var_dump($smsaero_api->sign_add('new sign')); // Добавление подписи
-//var_dump($smsaero_api->sign_list()); // Получить список подписей
-//var_dump($smsaero_api->group_add('new_group_name')); //Добавление группы
-//var_dump($smsaero_api->group_list()); // Получение списка групп
-//var_dump($smsaero_api->group_delete(123)); // Удаление группы
-//var_dump($smsaero_api->contact_add('70000000000', null, null, 'male', 'name', 'surname', null, 'param example')); // Добавление контакта
-//var_dump($smsaero_api->contact_delete(123)); // Удаление контакта
-//var_dump($smsaero_api->contact_list()); // Список контактов
-//var_dump($smsaero_api->blacklist_add(123)); // Добавление в чёрный список
-//var_dump($smsaero_api->blacklist_delete(123)); // Удаление из чёрного списка
-//var_dump($smsaero_api->blacklist_list()); // Список контактов в черном списке
-//var_dump($smsaero_api->hlr_check('70000000000')); // Создание запроса на проверку HLR
-//var_dump($smsaero_api->hlr_status(474664)); // Получение статуса HLR
-//var_dump($smsaero_api->number_operator('79136535500')); // Определение оператора
-//var_dump($smsaero_api->viber_send('70000000000', null, 'Bonus', 'INFO','Тестовое сообщение')); // Отправка Viber-рассылок
-//var_dump($smsaero_api->viber_statistic(1636)); // Статистика по Viber-рассылке
-//var_dump($smsaero_api->viber_list());  // Список Viber-рассылок
-//var_dump($smsaero_api->viber_sign_list()); // Список доступных подписей для Viber-рассылок
