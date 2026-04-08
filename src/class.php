@@ -159,9 +159,9 @@ class Msg
 
         $url = self::$domain_api . '/api/vk/send?' . http_build_query(array(
             's' => md5('send' . $from . $to_id),
-            'group' => $from,
+            'group_name' => $from,
             'to_user' => $to_id,
-            'msg' => $text,
+            'message' => $text,
             'domain' => self::getDomain()
         ));
 
